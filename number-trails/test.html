@@ -1,0 +1,18 @@
+<html>
+<head>
+<title>tesst</title>
+<head>
+<body>
+<div id="x">lol</div>
+</body>
+<script>
+
+if(window.DeviceMotionEvent){
+  window.addEventListener("devicemotion", motion, false);
+ document.getElementById("x").innerHTML = "supports";
+}else{
+ document.getElementById("x").innerHTML = "no support";
+}
+
+
+</script>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>OMG! Its Earthquake!!</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <script type="text/javascript" src="final.json"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.1.0/mapbox-gl-compare.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.1.0/mapbox-gl-compare.css' type='text/css' />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="data.json"></script>
+    <style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #191a1a;
+    }
+
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+
+    body * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    #title-box {
+        z-index: 10;
+        position: absolute;
+        padding-left: 3vw;
+        padding-right: 3vw;
+        right: 2vw;
+        top: 3vh;
+        background-color: #212121;
+        opacity: 1;
+        border-radius: 5px;
+        border: 1px solid #424242;
+    }
+
+    #title {
+        margin-top: 2vh;
+        font-size: 15px;
+        font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        color: #9E9E9E;
+    }
+
+    #sub-title {
+        margin-top: 2vh;
+        margin-bottom: 2vh;
+        top: 12vh;
+        font-size: 15px;
+        font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        color: #9E9E9E;
+        
+    }
+
+    .map {
+        position: absolute;
+        top: 0vh;
+        left: 0vw;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .mapboxgl-compare {
+        background-color: #757575 !important;
+    }
+
+    .compare-swiper {
+        background-color: #424242 !important;
+        color: #757575 !important;
+        box-shadow: inset 0 0 0 2px #757575 !important;
+    }
+
+    .mapboxgl-ctrl-attrib-inner {
+        display: none;
+    }
+
+    .mapboxgl-ctrl-logo {
+        display: none !important;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="title-box">
+        <div id="title">How strong were the earthquakes in 2017-2019 ?</div>
+        <div id="sub-title"><span style="color: #039BE5">actual</span> vs <span style="color: #BF360C">perceived</span></div>
+    </div>
+    <div id='before' class='map'></div>
+    <div id='after' class='map'></div>
+</body>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoicGJzaGd0aG0iLCJhIjoiY2poaXl5NGkxMGRnazM2a2R1Z2VoOHFpNSJ9.oBXuyfoi8qB-paCmQpk8pQ';
+var beforeMap = new mapboxgl.Map({
+    container: 'before',
+    style: 'mapbox://styles/pbshgthm/ck30fwul50wxk1cnv0y3z742v',
+    center: [0, 45],
+    zoom: 0.75,
+    minZoom: 0.75,
+    maxZoom: 2.5,
+    maxBounds: [
+        [-720, -56.8],
+        [720, 84],
+    ]
+});
+var afterMap = new mapboxgl.Map({
+    container: 'after',
+    style: 'mapbox://styles/pbshgthm/ck30fybfz0x0w1co2j4yr07lm',
+    center: [0, 45],
+    zoom: 0.75,
+    minZoom: 0.75,
+    maxZoom: 2.5,
+    maxBounds: [
+        [-720, -56.8],
+        [720, 84],
+    ]
+});
+beforeMap.on('load', function() {
+    beforeMap.addSource('heatmap', {
+        "type": "geojson",
+        "data": data
+    });
+    beforeMap.addLayer({
+        "id": "hm-circle-layer",
+        "type": "circle",
+        "source": "heatmap",
+        "paint": {
+            "circle-color": '#0277BD',
+            "circle-stroke-color": 'white',
+            "circle-stroke-width": 0,
+            "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["get", "mag"],
+                4, 1,
+                9, 11
+            ],
+            "circle-opacity": 0.2
+        }
+    });
+});
+afterMap.on('load', function() {
+    afterMap.addSource('heatmap', {
+        "type": "geojson",
+        "data": data
+    });
+    afterMap.addLayer({
+        "id": "hm-circle-layer",
+        "type": "circle",
+        "source": "heatmap",
+        "paint": {
+            "circle-color": '#E64A19',
+            "circle-stroke-color": 'white',
+            "circle-stroke-width": 0,
+            "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["get", "cdi"],
+                4, 1,
+                9, 11
+            ],
+            "circle-opacity": 0.3
+        }
+    });
+});
+var map = new mapboxgl.Compare(beforeMap, afterMap, {});
+</script>
+
+</html>

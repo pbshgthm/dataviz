@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sats</title>
+    <script type="text/javascript" src="d3.min.js"></script>
+    <script type="text/javascript" src="sat_data.json"></script>
+    <style type="text/css">
+    #ground {
+        position: absolute;
+        left: 1.5vw;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="ground"></div>
+</body>
+<script type="text/javascript">
+var svg = d3.select("#ground")
+    .append("svg")
+    .attr("width", 1400)
+    .attr("height", 4500)
+//.call(d3.zoom().on("zoom", function() {
+//        svg.attr("transform", d3.event.transform)
+//    }))
+//    .append("g")
+
+
+
+
+var b = [
+    'USA',
+    'Russia',
+    'China',
+    'Japan',
+    'India',
+    'European',
+    'Multinational',
+    'Other'
+]
+
+var eu = ["Albania", "Andorra", "Armenia", "Austria", "Azerbaijan", "Belarus", "Belgium", "Bosnia and Herzegovina", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia", "Finland", "France", "Georgia", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Kazakhstan", "Kosovo", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Moldova", "Monaco", "Montenegro", "Netherlands", "North Macedonia", "Norway", "Poland", "Portugal", "Romania", "Russia", "San Marino", "Serbia", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "Turkey", "Ukraine", "United Kingdom", "Vatican City", "ESA"]
+
+
+clrs = ['#168ed9', '#703c5a', '#d365ba', '#e5a551', '#94d365', '#3c703c', '#666666', '#c4c4c4']
+
+
+
+//PLOT CIRCLES
+var cir_data = []
+for (var i = 0; i < data.length; i++) {
+    var t = data[i]['Date of Launch'].split('/')[2]
+    if (t > 16) continue;
+
+    var w = parseInt(data[i]['Launch Mass (kg.)'])
+
+    var p = parseInt(data[i]['Perigee (km)'].toString().replace(',', ''))
+    var a = parseInt(data[i]['Apogee (km)'].toString().replace(',', ''))
+
+
+    
+
+
+
+    var c = data[i]['Country of Operator/Owner']
+    var d= data[i]['Period (minutes)']
+    console.log()
+    if (eu.indexOf(c) != -1) {
+        c = 'European'
+    }
+    if (c.indexOf('/') != -1) c = 'Multinational';
+    if (b.indexOf(c) == -1) c = 'Other';
+
+    c = clrs[b.indexOf(c)]
+    if (isNaN(w))
+        w = -1
+
+    cir_data.push([w, p, a, c,d])
+
+}
+
+var scale = Array(6000).fill(0)
+scale = scale.map((x, i) => 100 * (i + 1))
+
+svg.selectAll('line')
+    .data(scale)
+    .enter()
+    .append('line')
+    .attr("x1", 70)
+    .attr("x2", 1300)
+    .attr("y1", function(d) { return 400 * Math.log(d) - 1800 })
+    .attr("y2", function(d) { return 400 * Math.log(d) - 1800 })
+    .style("stroke", "#CFD8DC")
+    .attr('opacity', function(d) {
+        if (d <= 1000) return 1;
+        if (d < 10000) {
+            if (d % 1000 == 0)
+                return 1
+        }
+        if (d < 100000) {
+            if (d % 10000 == 0) {
+                return 1
+            }
+        }
+        if (d < 1000000) {
+            if (d % 100000 == 0) {
+                return 1
+            }
+        }
+        return 0;
+    })
+    .style("stroke-linecap", "round")
+    .style("stroke-width", 1);
+
+svg.selectAll('text')
+    .data(scale)
+    .enter()
+    .append("text")
+    .attr("fill", "#B0BEC5")
+    .attr("x", 0)
+    .attr("y", function(d) { return 5 + 400 * Math.log(d) - 1800 })
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .text(function(d) { return d })
+    .attr('opacity', function(d) {
+        if (d <= 1000) return 1;
+        if (d < 10000) {
+            if (d % 1000 == 0)
+                return 1
+        }
+        if (d < 100000) {
+            if (d % 10000 == 0) {
+                return 1
+            }
+        }
+        if (d < 1000000) {
+            if (d % 100000 == 0) {
+                return 1
+            }
+        }
+        return 0;
+    })
+
+
+
+
+var sat_cirs = svg.selectAll("circle")
+    .data(cir_data)
+    .enter()
+    .append("circle")
+    .attr('id', function(d, i) { return 'cir-' + i })
+    .attr("fill", function(d) { return d[3] })
+    .attr('r', function(d) { return 3 + d[0] / 40 })
+    .attr("cx", function(d) { return 50 + Math.random() * 1300 })
+    .attr("cy", function(d) { return 400 * Math.log(d[2]) - 1800 })
+    .attr('opacity', 0.4)
+
+    
+
+
+var stop=false;
+
+function shuttle(_id,to,dur) {
+	if(stop){
+		d3.selectAll("circle").transition();
+		return;
+	}
+
+    var from = d3.select('#cir-'+_id).attr('cy');
+
+    d3.select('#cir-'+_id)
+        .transition().duration(dur*60).ease(d3.easeLinear)
+        .attr("cy", to)
+        .transition().duration(dur*60).ease(d3.easeLinear)
+        .attr("cy", from)
+        .on("end",function(){shuttle(_id,to,dur)})
+
+}
+
+
+for(var i=0;i<cir_data.length;i++){
+	shuttle(i,400 * Math.log(cir_data[i][1]) - 1800,cir_data[i][4])
+}
+
+
+
+</script>
+
+</html>

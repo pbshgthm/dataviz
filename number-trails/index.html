@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Number trails</title>
+	<link rel="shortcut icon" type="image/png" href="favicon.ico"/>
+	<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:fb="http://ogp.me/ns/fb#">
+    <meta property="og:image" content="https://wanderling.github.io/numbertrails/preview.png" />
+	<script type="text/javascript" src="data.json"></script>
+	<style type="text/css">
+		body{
+			background-color:black;
+		}
+		#ground{
+			background-color: black;
+		}
+	</style>
+</head>
+
+<body>
+<canvas id="ground" height="900px" width="1655px">
+</canvas>
+
+</body>
+<script type="text/javascript">
+	
+
+
+
+function padDigits(number, digits) {
+    return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+}
+
+	
+function init(num){
+	canvas = document.getElementById("ground");
+	ctx = canvas.getContext("2d");
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	xinit={0:975,1:1345,2:1200,3:1345,4:945,5:1145};
+	yinit={0:685,1:745,2:505,3:655,4:505,5:505};
+	x1 = xinit[num];
+	y1 = yinit[num];
+	r =  2;
+	theta = 0;
+	ctx.font = "50px Arial";
+	ctx.fillStyle="White";
+	ctx.fillText("Number trails",80,120);
+	ctx.font = "20px Arial";;
+	kx=220;
+	ky=650;
+	kr=70;
+	ctx.lineWidth=3;
+
+
+
+	for(var i=0;i<10;i++)keyDraw(i);
+	desc();
+	ctx.font = "30px Arial";
+
+	nums=['π','e','φ','√2','√3','√5'];
+	nx=95;
+	for(var i=0;i<6;i++){
+		
+		ctx.font = 30-5*(Math.floor(i/3))+"px Arial";
+		ctx.fillStyle="black";
+		ctx.fillRect(nx+i*50,500,30,32);
+		ctx.fillStyle="#6EA8A5";
+		if(inLink)if(i==focusNum)ctx.fillStyle="#D0F2F0";
+		if(i==clicked)ctx.fillStyle="#8CFFF9";
+		ctx.fillText(nums[i],5*(1-Math.floor(i/3))+nx+i*50,525);
+	}
+		
+	
+	canvas.addEventListener("mousemove", on_mousemove, false);
+    canvas.addEventListener("click", on_click, false);
+
+	if (typeof stack !== 'undefined') {
+    for (var i = 0; i < stack.length; i++)
+    clearTimeout(stack[i]);
+	}
+	
+	stack=[]
+
+}
+
+function on_mousemove (ev) {
+  var x, y;
+ 
+  if (ev.layerX || ev.layerX) {
+    x = ev.layerX;
+    y = ev.layerY;
+  }
+  x-=canvas.offsetLeft;
+  y-=canvas.offsetTop;
+  
+  document.body.style.cursor = "";
+  inLink=false;
+ 
+  for(var i=0;i<6;i++){
+  		if(x>=95+i*50 && x <=112+i*50 &&
+     		y<=530 && y>= (500)){
+      	document.body.style.cursor = "pointer";
+      	inLink=true;
+      	focusNum=i;
+      	if(i==clicked){continue;}	
+      	ctx.font = 30-5*(Math.floor(i/3))+"px Arial";
+		ctx.fillStyle="black";
+		ctx.fillRect(nx+i*50,500,30,32);
+		ctx.fillStyle="#D0F2F0";
+		ctx.fillText(nums[i],5*(1-Math.floor(i/3))+nx+i*50,525);
+		
+  		}	
+  		else {
+  		if(i==clicked){continue;}
+		ctx.font = 30-5*(Math.floor(i/3))+"px Arial";
+		ctx.fillStyle="black";
+		ctx.fillRect(nx+i*50,500,30,32);
+		ctx.fillStyle="#6EA8A5";
+		ctx.fillText(nums[i],5*(1-Math.floor(i/3))+nx+i*50,525);
+		}
+    }
+
+}
+
+function on_click(e) {
+  if (inLink)  {
+    numSum(focusNum);
+    draw(focusNum);
+	}
+}
+
+function keyDraw(d){
+	theta=(3.141*2*d/10)+3.14/2;
+	x=kx + kr * Math.cos(theta);
+	y=ky + kr * Math.sin(theta);
+	ctx.beginPath();
+	grd=ctx.createLinearGradient(x,y,kx,ky);
+	grd.addColorStop(1,'blue');
+	grd.addColorStop(0,'black');
+	ctx.moveTo(x, y);
+	ctx.lineTo(kx,ky);
+	ctx.strokeStyle=grd;
+	ctx.stroke();
+	
+	ctx.fillStyle="White";
+	ctx.fillText(d,x-7,y+7);
+}
+
+function numSum(num){
+
+	ctx.fillStyle="black";
+	ctx.fillRect(75,250,350,230);
+
+	sx=210;
+	sy=300;
+	
+	ctx.fillStyle="White";
+	numsVal={0:'3.14159265359...',
+			 1:'2.71828182846...',
+			 2:'1.61803398874...',
+			 3:'1.41421356237...',
+			 4:'1.73205080757...',
+			 5:'2.23606797749...'};
+	numsDes1={0:"Pi. The ratio between a circle's ",
+			  1:"Euler's number",
+			  2:"Phi. The golden ratio. Found in",
+			  3:"Square root of 2. Ratio between",
+			  4:"Square root of 3. Ratio between",
+			  5:"Square root of 5."};
+	numsDes2={0:"circumference and its diameter. ",
+			  1:"The base of natural logarithm.",
+			  2:"fibbonaci series and spirals.",
+			  3:"the diagonal and side of a square.",
+			  4:"the diagonal and side of a cube.",
+			  5:"Closely related to golden ratio."};
+	xofs1={0:105,1:155,2:105,3:103,4:103,5:145};
+	xofs2={0:105,1:105,2:110,3:90,4:90,5:90};
+
+	ctx.fillStyle="#66a3ff";
+	ctx.font = 40-8*(Math.floor(num/3))+"px Arial";
+	ctx.fillText(nums[num],sx-10*(Math.floor(num/3)),sy);
+	ctx.font = "30px Arial";
+	ctx.fillStyle="white";
+	ctx.fillText(numsVal[num],115,sy+60);
+	ctx.font = "20px Arial";
+	ctx.fillStyle="white";
+	ctx.fillText(numsDes1[num],xofs1[num],sy+110);
+	ctx.fillText(numsDes2[num],xofs2[num],sy+140);
+	clicked=num;
+	
+
+}
+
+function desc(){
+	ctx.font = "20px Arial";
+	ctx.fillText('The trail grows in the direction',105,800);
+	ctx.fillText('represented by the digits in the',101,830);
+	ctx.fillText('decimal expansion of the number',95,860);
+	ctx.font = "15px Arial";
+	ctx.fillText('by Poobesh Gowtham',150,890);
+	
+	ctx.font = "30px Arial";
+	
+}
+	
+function move(digit,ind){
+
+	stack.push(setTimeout(function(){
+
+		theta=(3.141*2*digit/10)+(3.14/2);
+		x2=x1 + r * Math.cos(theta);
+		y2=y1 + r * Math.sin(theta);
+
+		clr="hsl("+((360*ind)/100000)+",100%,50%)";
+
+		ctx.font = "30px Arial";
+		ctx.fillStyle="black";
+		ctx.fillRect(100,150,135,80);
+		ctx.fillStyle=clr;
+		ctx.fillText(padDigits(ind+1,6),125,200);
+		ctx.beginPath();
+
+
+		ctx.moveTo(x1, y1);
+		ctx.lineTo(x2,y2);
+		ctx.lineWidth=2;
+		ctx.strokeStyle=clr;
+
+		ctx.stroke();
+		x1=x2;
+		y1=y2;
+	},ind/1000));
+}
+
+function draw(val){
+	init(val);
+	numSum(val);
+	strDict={0:pi,1:e,2:phi,3:two,4:three,5:five};
+	string=strDict[val];
+	ctx.font = "30px Arial";	
+	ctx.fillStyle="white";
+	ctx.fillText('digits',240,200);
+	for(var i=0;i<100000;i++){
+		d=parseInt(string[i])
+		move(d,i);
+	}
+}
+
+inLink=false;
+clicked=0;
+focusNum=0;
+init(0);
+draw(0);
+
+</script>
+</html>

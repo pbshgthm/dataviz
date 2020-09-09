@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>InOrbit</title>
+    <script type="text/javascript" src="d3.min.js"></script>
+    <script type="text/javascript" src="sat_data.json"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <style type="text/css">
+
+    body,
+    html {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #sat-ground {
+        margin: 0px;
+        padding: 0px;
+    }
+    </style>
+</head>
+
+<body>
+    <dir id="sat-ground"></dir>
+</body>
+<script type="text/javascript">
+var w_x = window.innerWidth;
+var w_y = window.innerHeight;
+
+var earth_center = [900, 425, 50]
+
+var m_list = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+var sat_svg = d3.select('#sat-ground')
+    .append("svg")
+    .attr("width", w_x)
+    .attr("height", w_y)
+    .style('background', '#FFFFFF')
+    .call(d3.zoom().on("zoom", function() {
+        sat_svg.attr("transform", d3.event.transform)
+    }))
+    .append("g")
+
+sat_svg.append('rect')
+    .attr('fill', 'white')
+    .attr('height', w_y)
+    .attr('width', 500)
+    .attr('opacity', 0.3)
+
+var alt_dict = {
+
+    'LEO': earth_center[2] + 70,
+    'MEO': earth_center[2] + 150,
+    'GEO': earth_center[2] + 200,
+    'Elliptical': earth_center[2] + 250
+
+}
+
+sat_svg.append('rect')
+    .attr('fill', '#B39DDB')
+    .attr('x', 990)
+    .attr('y', 120)
+    .attr('height', 1)
+    .attr('width', 300)
+
+var eleOrbit = sat_svg.append('circle')
+    .attr('fill', '#E8E8E8')
+    .attr('cx', earth_center[0])
+    .attr('cy', earth_center[1])
+    .attr('r', earth_center[2] + 270)
+    .attr('stroke', '#B39DDB')
+
+sat_svg
+    .append("text")
+    .attr("x", 1290)
+    .attr("y", 105)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('text-anchor','end')
+    .attr('fill', '#9575CD')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Elliptical Orbit')
+
+sat_svg.append('rect')
+    .attr('fill', '#90CAF9')
+    .attr('x', 900)
+    .attr('y', 184)
+    .attr('height', 1)
+    .attr('width', 395)
+
+
+var geoOrbit = sat_svg.append('circle')
+    .attr('fill', '#F0F0F0')
+    .attr('cx', earth_center[0])
+    .attr('cy', earth_center[1])
+    .attr('r', earth_center[2] + 230)
+    .attr('stroke', '#90CAF9')
+
+sat_svg
+    .append("text")
+    .attr("x", 1290)
+    .attr("y", 169)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('text-anchor','end')
+    .attr('fill', '#64B5F6')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Geostationary Orbit')
+
+sat_svg.append('rect')
+    .attr('fill', '#80DEEA')
+    .attr('x', 900)
+    .attr('y', 250)
+    .attr('height', 1)
+    .attr('width', 395)
+
+var meoOrbit = sat_svg.append('circle')
+    .attr('fill', '#F5F5F5')
+    .attr('cx', earth_center[0])
+    .attr('cy', earth_center[1])
+    .attr('r', earth_center[2] + 170)
+    .attr('stroke', '#80DEEA')
+
+sat_svg
+    .append("text")
+    .attr("x", 1290)
+    .attr("y", 235)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('text-anchor','end')
+    .attr('fill', '#4DD0E1')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Medium Earth Orbit')
+
+
+sat_svg.append('rect')
+    .attr('fill', '#80CBC4')
+    .attr('x', 1100)
+    .attr('y', 700)
+    .attr('height', 1)
+    .attr('width', 190)
+
+sat_svg.append('rect')
+    .attr('fill', '#80CBC4')
+    .attr('x', 1100)
+    .attr('y', 700)
+    .attr('height', 1)
+
+
+sat_svg
+    .append('line')
+    .attr("x1", 900)
+    .attr("x2", 1101)
+    .attr("y1", 400)
+    .attr("y2", 700)
+    .style("stroke", '#80CBC4')
+    .style("stroke-width", 1);
+
+sat_svg
+    .append("text")
+    .attr("x", 1290)
+    .attr("y", 685)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('text-anchor','end')
+    .attr('fill', '#4DB6AC')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Low Earth Orbit')
+
+
+
+var leoOrbit = sat_svg.append('circle')
+    .attr('fill', '#FFFFFF')
+    .attr('cx', earth_center[0])
+    .attr('cy', earth_center[1])
+    .attr('r', earth_center[2] + 130)
+    .attr('stroke', '#80CBC4')
+
+var earth = sat_svg.append('circle')
+    .attr('fill', '#CFD8DC')
+    .attr('cx', earth_center[0])
+    .attr('cy', earth_center[1])
+    .attr('r', earth_center[2])
+
+
+
+
+var b = [
+    'USA',
+    'Russia',
+    'China',
+    'Japan',
+    'India',
+    'European',
+    'Multinational',
+    'Other'
+]
+
+var eu = ["Albania", "Andorra", "Armenia", "Austria", "Azerbaijan", "Belarus", "Belgium", "Bosnia and Herzegovina", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia", "Finland", "France", "Georgia", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Kazakhstan", "Kosovo", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Moldova", "Monaco", "Montenegro", "Netherlands", "North Macedonia", "Norway", "Poland", "Portugal", "Romania", "Russia", "San Marino", "Serbia", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "Turkey", "Ukraine", "United Kingdom", "Vatican City", "ESA"]
+
+
+clrs = ['#168ed9', '#703c5a', '#d365ba', '#e5a551', '#94d365', '#3c703c', '#666666', '#c4c4c4']
+
+
+
+
+
+
+
+
+var sats = []
+for (var i = 0; i < data.length; i++) {
+    var time = data[i]['Date of Launch'].split('/')
+    year = parseInt(time[2])
+    if (year > 20) year = 1900 + year
+    else year = 2000 + year
+    year = year - 1950
+    time = parseInt(parseInt(time[1]) + year * 12)
+
+
+    var mass = data[i]['Launch Mass (kg.)']
+    if (mass == '') mass = 1
+    mass = parseInt(mass)
+    w_mass = 1.5
+
+    w_mass += Math.log(mass) / 3
+
+    orbit = data[i]['Class of Orbit']
+
+    var c = data[i]['Country of Operator/Owner']
+
+    if (eu.indexOf(c) != -1) {
+        c = 'European'
+    }
+    if (c.indexOf('/') != -1) c = 'Multinational';
+    if (b.indexOf(c) == -1) c = 'Other';
+
+    c = clrs[b.indexOf(c)]
+
+    sats.push([time, orbit, w_mass, c])
+}
+sats.sort(function(a, b) { return a[0] - b[0] })
+
+
+
+
+
+var clr_dict = {
+    'GEO': '#9C27B0',
+    'LEO': '#2196F3',
+    'MEO': '#8BC34A',
+    'Elliptical': '#FF7043'
+}
+
+var sat_data = []
+var sat_bins = {}
+
+for (var i = 0; i < sats.length; i++) {
+    var x = sats[i];
+    var theta = Math.random() * 360
+    var ex = Math.sin(theta) * 10
+    var ey = Math.cos(theta) * 10
+    if (x[0] in sat_bins)
+        sat_bins[x[0]].push({
+            'date': x[0],
+            'id': 'sat-' + i,
+            'radius': x[2],
+            'orbit': x[1],
+            'x': earth_center[0] + ex,
+            'y': earth_center[1] + ey,
+            'clr': x[3]
+
+        })
+    else
+        sat_bins[x[0]] = [{
+            'date': x[0],
+            'id': 'sat-' + i,
+            'radius': x[2],
+            'orbit': x[1],
+            'x': earth_center[0] + ex,
+            'y': earth_center[1] + ey,
+            'clr': x[3],
+            'class': x[1]
+
+        }]
+}
+
+
+
+
+
+
+
+
+sat_pad = Array(859 - 303).fill(0)
+sat_pad = sat_pad.map((x, i) => [303 + i, (303 + i) in sat_bins ? sat_bins[303 + i] : []])
+sat_bins = sat_pad
+
+
+var nodes = []
+
+
+
+var simulation = d3.forceSimulation(nodes)
+    .force('charge', d3.forceManyBody().strength(0.01))
+    .force('r', d3.forceRadial(function(d) { return alt_dict[d['orbit']] }, earth_center[0], earth_center[1]))
+    .force('collision', d3.forceCollide().radius(function(d) {
+        return d.radius + 1
+    }))
+
+    .on('tick', ticked);
+
+
+
+
+node = sat_svg.append("g").selectAll(".nodes");
+
+orb_group = []
+orb_group.push(sat_svg.append("g").selectAll(".LEO"))
+orb_group.push(sat_svg.append("g").selectAll(".MEO"))
+orb_group.push(sat_svg.append("g").selectAll(".GEO"))
+orb_group.push(sat_svg.append("g").selectAll(".Elliptical"))
+
+orb_list = ['LEO', 'MEO', 'GEO', 'Elliptical']
+
+
+function restart() {
+
+    var orb_bins = [
+        [],
+        [],
+        [],
+        []
+    ]
+
+    for (var i = 0; i < nodes.length; i++) {
+        var orb = orb_list.indexOf(nodes[i]['orbit'])
+        orb_bins[orb].push(nodes[i])
+    }
+
+    /*
+    for (var i = 0; i < 4; i++) {
+        orb_group[i] = orb_group[i].data(orb_bins[i], function(d) { return d.id; });
+        orb_group[i].exit().remove();
+
+        orb_group[i] = orb_group[i].enter()
+            .append("circle")
+            //.datum(function(d){'orb':d.orbit,'cnt':d.country,'pur':d.purpose})
+            .attr("fill", function(d) { return d.clr })
+            .attr("r", function(d) { return d.radius })
+            .attr('class', 'sats')
+            .attr('id', function(d) { return d.id })
+            .merge(orb_group[i]);
+    }
+    //*/
+    ///*
+    node = node.data(nodes, function(d) { return d.id; });
+    node.exit().remove();
+
+    node = node.enter()
+        .append("circle")
+        //.datum(function(d){'orb':d.orbit,'cnt':d.country,'pur':d.purpose})
+        .attr("fill", function(d) { return d.clr })
+        .attr("r", function(d) { return d.radius })
+        .attr('class', 'sats')
+        .attr('id', function(d) { return d.id })
+        .merge(node);
+
+    //*/
+    earth.raise()
+    simulation.nodes(nodes);
+    simulation.alpha(1).restart();
+
+}
+
+function ticked() {
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; })
+
+}
+
+function add() {
+
+    var curr_sats = sat_bins.shift()[1]
+    sat_time += 1
+    sat_count += curr_sats.length
+
+
+    var y = Math.floor(sat_time / 12) + 1950 + 22
+    d3.select('#year-count').text(y)
+
+    d3.select('#sat-count').text(sat_count)
+
+    sat_svg.append('rect')
+        .attr('fill', '#B3E5FC')
+        .attr('x', 60 + sat_time / 1.2)
+        .attr('y', 770 - sat_count / 15)
+        .attr('height', 1 + sat_count / 15)
+        .attr('width', 1 / 1.2 + 0.1)
+
+    sat_svg.append('rect')
+        .attr('fill', '#4FC3F7')
+        .attr('x', 60 + sat_time / 1.2)
+        .attr('y', 780)
+        .attr('height', 2)
+        .attr('width', 1 / 1.2 + 0.1)
+
+    nodes = nodes.concat(curr_sats);
+    restart();
+}
+
+
+
+
+
+
+
+pur_dict = {
+    'Civil': [],
+    'Commercial': [],
+    'Military': [],
+    'Government': [],
+    'All': []
+}
+
+pur_list = ['Civil', 'Military', 'Commercial', 'Government', 'All']
+for (var i = 0; i < data.length; i++) {
+    var pur = data[i]["Users"].split('/')
+    for (var j = 0; j < pur.length; j++) {
+        pur_dict[pur[j]].push(i)
+        pur_dict['All'].push(i)
+    }
+}
+
+sat_svg
+    .append("text")
+    .attr("x", 60)
+    .attr("y", 400)
+    .attr("dy", "10px")
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#90A4AE')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Users')
+
+sat_svg
+    .append("rect")
+    .attr("x", 60)
+    .attr("y", 420)
+    .attr('height', 1)
+    .attr('width', 200)
+    .attr('fill', '#CFD8DC')
+
+for (var i = 0; i < 4; i++) {
+
+
+
+    sat_svg
+        .append("text")
+        .attr('id', 'pur-txt-' + pur_list[i])
+        .attr("x", 120 + 137 * parseInt(i / 2))
+        .attr("y", 460 + 50 * (i % 2))
+        .attr("dy", "10px")
+        .style("font-size", "15px")
+        .style('font-family', 'Arial')
+        .attr('fill', '#546E7A')
+        .attr('opacity', 1)
+        .attr('text-anchor', 'middle')
+        .text(pur_list[i])
+        .attr('cursor', 'pointer')
+
+
+    sat_svg
+        .append('rect')
+        .attr('class', 'pur-btn')
+        .attr('rx', 7)
+        .attr('ry', 7)
+        .attr('id', 'pur-btn-' + pur_list[i])
+        .attr("x", 70 + 137 * parseInt(i / 2) - 10)
+        .attr('width', 120)
+        .attr("y", 460 + 50 * (i % 2) - 15)
+        .attr('height', 36)
+        .attr('fill', 'white')
+        .attr('stroke', '#CFD8DC')
+        .attr('stroke-width', 1.4)
+        .attr('opacity', 0.5)
+        .attr('cursor', 'pointer')
+        .on('mouseover', pur_mouseover)
+        .on('mouseout', pur_mouseout)
+        .on('click', pur_click)
+}
+
+
+sat_svg
+    .append("text")
+    .attr('id', 'pur-txt-All')
+    .attr("x", 145 + 152)
+    .attr("y", 460 - 57)
+    .attr("dy", "10px")
+    .style("font-size", "13px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#546E7A')
+    .attr('opacity', 1)
+    .attr('text-anchor', 'middle')
+    .attr('font-family','Montserrat').text('All')
+    .attr('cursor', 'pointer')
+
+
+sat_svg
+    .append('rect')
+    .attr('class', 'pur-btn')
+    .attr('rx', 7)
+    .attr('ry', 7)
+    .attr('id', 'pur-btn-All')
+    .attr("x", 120 + 157)
+    .attr('width', 40)
+    .attr("y", 460 - 50 - 15)
+    .attr('height', 25)
+    .attr('fill', '#E0F7FA')
+    .attr('stroke', '#26C6DA')
+    .attr('stroke-width', 1.4)
+    .attr('opacity', 0.5)
+    .attr('cursor', 'pointer')
+    .on('mouseover', pur_mouseover)
+    .on('mouseout', pur_mouseout)
+    .on('click', pur_click)
+
+
+
+
+curr_user = 'All'
+
+function pur_mouseover() {
+    var _id = d3.select(this).attr('id').split('-')[2]
+    if (curr_user == _id) return;
+    d3.select(this)
+        .attr('stroke', '#26C6DA')
+}
+
+function pur_mouseout() {
+    var _id = d3.select(this).attr('id').split('-')[2]
+    if (curr_user == _id) return;
+    d3.select(this).attr('fill', 'white')
+        .attr('stroke', '#CFD8DC')
+}
+
+function pur_click() {
+    var _id = d3.select(this).attr('id').split('-')[2]
+    curr_user = _id
+    d3.selectAll('.pur-btn').attr('fill', 'white')
+        .attr('stroke', '#CFD8DC')
+
+    d3.select(this).attr('fill', '#E0F7FA')
+        .attr('stroke', '#26C6DA')
+
+    console.log(_id)
+    d3.selectAll('.sats')
+        .attr('fill', '#CFD8DC')
+
+    for (var i = 0; i < pur_dict[_id].length; i++) {
+        var ind = pur_dict[_id][i]
+        d3.selectAll('#sat-' + ind)
+            .attr('fill', function(d, i) {
+                var country = loc_list[ind]
+
+                return clrs[b.indexOf(country)]
+            })
+    }
+
+}
+
+sat_svg
+    .append("text")
+    .attr("x", 60)
+    .attr("y", 170)
+    .attr("dy", "10px")
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#90A4AE')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Launch Country')
+
+sat_svg
+    .append("rect")
+    .attr("x", 60)
+    .attr("y", 190)
+    .attr('height', 1)
+    .attr('width', 200)
+    .attr('fill', '#CFD8DC')
+
+
+for (var i = 0; i < 8; i++) {
+
+
+    sat_svg.append('circle')
+        .attr('fill', clrs[i])
+        .attr('cx', 70 + 115 * parseInt(i / 4))
+        .attr('cy', 225 + 30 * (i % 4))
+        .attr('r', 7)
+
+
+    sat_svg
+        .append("text")
+        .attr("x", 70 + 20 + 115 * parseInt(i / 4))
+        .attr("y", 225 + 30 * (i % 4) - 3)
+        .attr("dy", "10px")
+        .style("font-size", "17px")
+        .style('font-family', 'Arial')
+        .attr('fill', '#B0BEC5')
+        .attr('opacity', 1)
+        .text(b[i])
+}
+
+
+
+loc_dict = {
+    'USA': [],
+    'Russia': [],
+    'China': [],
+    'Japan': [],
+    'India': [],
+    'European': [],
+    'Multinational': [],
+    'Other': []
+}
+
+loc_list = {}
+for (var i = 0; i < data.length; i++) {
+    var c = data[i]['Country of Operator/Owner']
+    if (eu.indexOf(c) != -1) {
+        c = 'European'
+    }
+    if (c.indexOf('/') != -1) c = 'Multinational';
+    if (b.indexOf(c) == -1) c = 'Other';
+    loc_list[i] = c
+    loc_dict[c].push(i)
+}
+
+
+sat_svg.append('rect')
+    .attr('fill', '#EDE7F6')
+    .attr('x', 1300)
+    .attr('y', 700 - 30000 / 50)
+    .attr('height', 30000 / 50)
+    .attr('width', 20)
+
+
+sat_svg
+    .append("text")
+    .attr("x", 1340-10)
+    .attr("y", 100)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('30,000 Km')
+
+sat_svg.append('rect')
+    .attr('fill', '#90CAF9')
+    .attr('x', 1300)
+    .attr('y', 700 - 25780 / 50)
+    .attr('height', 25780 / 50)
+    .attr('width', 20)
+
+
+sat_svg
+    .append("text")
+    .attr("x", 1340-10)
+    .attr("y", 700 - 25780 / 50-6)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('25,776 Km')
+
+
+
+sat_svg.append('rect')
+    .attr('fill', '#E0F7FA')
+    .attr('x', 1300)
+    .attr('y', 700 - 25700 / 50)
+    .attr('height', 25700 / 50)
+    .attr('width', 20)
+
+
+ sat_svg
+    .append("text")
+    .attr("x", 1340-10)
+    .attr("y", 720 - 2000 / 50-6)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('5,000 Km')
+
+sat_svg.append('rect')
+    .attr('fill', '#DCEDC8')
+    .attr('x', 1300)
+    .attr('y', 720 - 2000 / 50)
+    .attr('height', 2000 / 50)
+    .attr('width', 20)
+
+
+
+sat_svg
+    .append("text")
+    .attr("x", 1340-10)
+    .attr("y", 720 - 2000 / 50+28)
+    .attr("dy", "10px")
+    .style("font-size", "10px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Ground')
+
+
+
+
+
+
+
+sat_svg
+    .append("text")
+    .attr("x", 60)
+    .attr("y", 590)
+    .attr("dy", "10px")
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#90A4AE')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Timeline')
+
+sat_svg
+    .append("rect")
+    .attr("x", 60)
+    .attr("y", 610)
+    .attr('height', 1)
+    .attr('width', 200)
+    .attr('fill', '#CFD8DC')
+
+
+
+sat_svg.append('text')
+
+    .attr("x", 60)
+    .attr("y", 640)
+    .attr("dy", "10px")
+    .style("font-size", "15px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Year')
+
+sat_svg.append('text')
+    .attr('id', 'year-count')
+    .attr("x", 60)
+    .attr("y", 670)
+    .attr("dy", "10px")
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#546E7A')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('')
+
+sat_svg.append('text')
+    .attr("x", 60)
+    .attr("y", 710)
+    .attr("dy", "10px")
+    .style("font-size", "15px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Total Satellites')
+
+sat_svg.append('text')
+    .attr('id', 'sat-count')
+    .attr("x", 60)
+    .attr("y", 740)
+    .attr("dy", "10px")
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#546E7A')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('')
+
+
+
+var mass_key = [
+    ['< 5 Kg', 1.7],
+    ['> 5,000 Kg', 4],
+    ['> 10,000 Kg', 4.8]
+]
+
+sat_svg
+    .append("text")
+    .attr("x", 350)
+    .attr("y", 170)
+    .attr("dy", "10px")
+    .style("font-size", "20px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#90A4AE')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Mass at launch')
+
+sat_svg
+    .append("rect")
+    .attr("x", 350)
+    .attr("y", 190)
+    .attr('height', 1)
+    .attr('width', 200)
+    .attr('fill', '#CFD8DC')
+
+
+
+for (var i = 0; i < 3; i++) {
+    sat_svg.append('circle')
+        .attr('fill', '#78909C')
+        .attr('cx', 360)
+        .attr('cy', 225 + 30 * i)
+        .attr('r', mass_key[i][1])
+
+
+    sat_svg
+        .append("text")
+        .attr("x", 380)
+        .attr("y", 225 + 30 * i - 3)
+        .attr("dy", "10px")
+        .style("font-size", "17px")
+        .style('font-family', 'Arial')
+        .attr('fill', '#B0BEC5')
+        .attr('opacity', 1)
+        .text(mass_key[i][0])
+}
+
+sat_svg
+    .append("text")
+    .attr("x", 60)
+    .attr("y", 40)
+    .attr("dy", "10px")
+    .style("font-size", "15px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#B0BEC5')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('Every satellite')
+
+
+sat_svg
+    .append("text")
+    .attr("x", 57)
+    .attr("y", 90)
+    .attr("dy", "10px")
+    .style("font-size", "50px")
+    .style('font-family', 'Arial')
+    .attr('fill', '#78909C')
+    .attr('opacity', 1)
+    .attr('font-family','Montserrat').text('InOrbit')
+
+
+
+
+
+var sat_time = 0
+var sat_count = 0
+
+//restart()
+for (var i = 0; i < sat_bins.length; i++) {
+    setTimeout(function(i) {
+        add();
+    }, i * 30)
+}
+</script>
+
+</html>

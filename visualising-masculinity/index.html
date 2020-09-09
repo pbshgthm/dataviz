@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Visualize Masculalinity</title>
+	<script type="text/javascript" src="assets/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="assets/mdata.json"></script>
+	<link rel="stylesheet" type="text/css" href="assets/main.css">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+	<div id="title">What Do Men Think It Means To Be A Man?</div>
+<a href="https://fivethirtyeight.com/features/what-do-men-think-it-means-to-be-a-man/" target="blank">
+		<div id="side-pane">
+			<div id="desc">Based on a survey<br/> of over 1,600 men by</div>
+			<img src="assets/fte.png" id="fte-logo"/>
+		</div>
+</a>
+	<div id='nav'></div>
+	<div id="question"></div>
+	<img src="assets/nav.png" id="next-btn"/>
+	<img src="assets/nav.png" id="prev-btn"/>
+	<div id="qnum"></div>
+
+
+	<div id="legend-pane"></div>
+
+
+	<div id="ground">
+
+		<div class="bar" id="total-bar"></div>
+			<div class="label" id="total-label">Total</div>
+
+		<div id="age-pane">
+			<div id="age-label">Age</div>
+			<div class="bar" id="age1-bar"></div>
+				<div class="label" id="age1-label">18-34</div>
+			<div class="bar" id="age2-bar"></div>
+				<div class="label" id="age2-label">25-64</div>
+			<div class="bar" id="age3-bar"></div>
+				<div class="label" id="age3-label">65-99</div>
+		</div>
+
+		<div id="race-pane">
+			<div id="race-label">Race</div>
+			<div class="bar" id="race1-bar"></div>
+				<div class="label" id="race1-label">White</div>
+			<div class="bar" id="race2-bar"></div>
+				<div class="label" id="race2-label">Others</div>
+		</div>
+
+		<div id="child-pane">
+			<div id="child-label">Have Children</div>
+			<div class="bar" id="child1-bar"></div>
+				<div class="label" id="child1-label">Yes</div>
+			<div class="bar" id="child2-bar"></div>
+				<div class="label" id="child2-label">No</div>
+		</div>
+
+		<div id="so-pane">
+			<div id="so-label">Sexual Orientation</div>
+			<div class="bar" id="so1-bar"></div>
+				<div class="label" id="so1-label">Straight</div>
+			<div class="bar" id="so2-bar"></div>
+				<div class="label" id="so2-label">Gay</div>
+		</div>
+
+
+
+	</div>
+</body>
+<script type="text/javascript">
+	var maxSec=6;
+	var s=$('.bar').height()/100;
+	var currQ=0;
+
+
+	$('.bar').each(function(){
+		var _secs='';
+		for(var i=0;i<maxSec;i++)
+			_secs+='<div class="sec sec'+(i+1)+'"></div>';
+		$(this).append(_secs);
+	})
+
+
+
+	function updateBars(ind){
+
+		var data=masterData[ind];
+		currQ=ind;
+
+		$('.nav-btn').removeClass('nav-btn-sel');
+		$('.nav-btn').eq(ind).addClass('nav-btn-sel');
+
+		$('#qnum').text('#'+((ind<9)?('0'+(ind+1)):ind+1));
+		$('#question').text(data[0]);
+		$('.legend-txt').text('');
+		for(var i=0;i<data[1].length;i++)
+			$('.legend-txt').eq(i).text(data[1][i])
+
+		for(var i=0;i<10;i++){
+			data[2+i]=data[2+i].concat(Array(maxSec-data[1].length).fill(0))
+			var numLab=data[1].length;
+			for(var j=0;j<maxSec;j++){
+				$('.bar').eq(i).children().eq(j).css('height',s*data[2+i][j]+'px');
+
+				var clr=$('.bar').eq(i).children().eq(j).css('background-color');
+				var tclr='rgba(255,255,255,0.85)'
+				if(j>=numLab){
+					clr='#FAFAFA';
+					tclr='rgba(255,255,255,0)'
+				}
+				$('.legend-box').eq(j).css('background-color',clr);
+				$('.legend-txt').eq(j).css('background-color',tclr);
+			}
+		}
+	}
+
+
+	$('#next-btn').click(function(){
+		if(currQ<masterData.length-1)
+			currQ++;
+		updateBars(currQ);
+
+		$('#next-btn').show();
+		$('#prev-btn').show();
+		if(currQ==masterData.length-1)
+			$('#next-btn').hide();
+	})
+
+	$('#prev-btn').click(function(){
+		console.log('awdfd')
+		if(currQ>0)
+			currQ--;
+		updateBars(currQ);
+
+		$('#next-btn').show();
+		$('#prev-btn').show();
+		if(currQ==0)
+			$('#prev-btn').hide();
+	})
+
+
+	var _nav='';
+	for(var i=0;i<masterData.length;i++)
+		_nav+='<div class="nav-btn" onclick="updateBars('+i+')"></div>';
+	$('#nav').append(_nav);
+
+
+	var _leg='';
+	for(var i=0;i<6;i++)
+		_leg+='<div class="legend-box">\
+				<div class="legend-clr"></div>\
+				<div class="legend-txt"></div>\
+				</div>';
+	$('#legend-pane').append(_leg);
+
+	updateBars(0);
+</script>
+</html>

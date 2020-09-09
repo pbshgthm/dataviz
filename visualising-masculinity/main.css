@@ -1,0 +1,324 @@
+html,body{
+	border:0px;
+	margin: 0px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+
+#title{
+	position: absolute;
+	font-size: 1.5vw;
+	font-family: 'Montserrat', sans-serif;
+	width: 33vw;
+	padding-top: 3vh;
+	padding-bottom: 1vh;
+	border-bottom: 5px solid #ECEFF1;
+	font-style: italic;
+	left: 33.5vw;
+	color: #455A64;
+	text-align: center;
+}
+#question{
+	position: absolute;
+	font-size: 2.1vw;
+	font-family: 'Montserrat', sans-serif;
+	width: 54vw;
+	left: 23vw;
+	top: 12vh;
+	color: #78909C;
+	text-align: center;
+	height: 12vh;
+
+}
+
+#side-pane{
+	position: absolute;
+	background-color: #ECEFF1;
+	height: 12vh;
+	width: 18vw;
+	top: 3vh;
+	right:-5vw;
+}
+
+#desc{
+	position: absolute;
+	top: 2vh;
+	width: 10.5vw;
+	left: 0vw;
+	padding-left: 1.5vw;
+	padding-right: 1.5vw;
+	font-size: 1vw;
+	color: #455A64;
+	text-align: center;
+	font-family: 'Montserrat', sans-serif;
+}
+
+#fte-logo{
+	position: absolute;
+	top: 8vh;
+	width: 10vw;
+	left: 1.7vw;
+}
+
+#nav{
+	z-index: 3;
+	top:24vh;
+	left: 19vw;
+	width: 63vw;
+	height: 1vh;
+	position: absolute;
+}
+.nav-btn{
+	height: 0.7vh;
+	width: 1vw;
+	margin-right: 1.5vw;
+	z-index: 5;
+	display: inline-block;
+	background-color: #CFD8DC;
+	cursor: pointer;
+}
+.nav-btn:hover{
+	background-color: #FF7043;
+}
+.nav-btn-sel{
+	background-color: #FF7043;
+}
+
+#qnum{
+	color: #78909C;
+	position: absolute;
+	top: 3vh;
+	left: 2vw;
+	font-size: 2vw;
+	font-family: 'Montserrat', sans-serif;
+}
+#prev-btn{
+	cursor: pointer;
+	z-index: 2;
+	position: absolute;
+	width: 2vw;
+	opacity: 0.3;
+	top: 15vh;
+	left:17vw;
+	transform: rotate(90deg);
+	display: none;
+}
+
+#next-btn{
+	cursor: pointer;
+	z-index: 2;
+	position: absolute;
+	width: 2vw;
+	opacity: 0.3;
+	top: 15vh;
+	right:17vw;
+	transform: rotate(-90deg);
+}
+
+#next-btn:hover,#prev-btn:hover{
+	opacity: 0.5;
+}
+
+#ground{
+	position: absolute;
+	width: 100vw;
+	top: 42vh;
+	left: 6vw;
+}
+#legend-pane{
+	position: absolute;
+	width: 88vw;
+	top: 30.5vh;
+	left:10vw;
+}
+.legend-box{
+	transition: 0.2s;
+	display: inline-block;
+	width: 11.5vw;
+	margin-right: 2.3vw;
+}
+
+.legend-clr{
+	transition: 0.2s;
+	height: 7vh;
+	display: table-cell;
+	width: 3vw;
+}
+
+.legend-txt{
+	transition: 0.2s;
+	width: 8vw;
+	padding-left: 0.6vw;
+	padding-right: 0.3vw;
+	vertical-align: top;
+	vertical-align: middle;
+	display: table-cell;
+	font-size: 0.9vw;
+	font-family: 'Montserrat', sans-serif;
+	color: #455A64;
+	background-color: rgba(255,255,255,0.85);
+}
+
+.label{
+	text-align: center;
+	width: 4vw;
+	position: absolute;
+	bottom: -4vh;
+	font-size: 1vw;
+	font-family: 'Montserrat', sans-serif;
+	color: #546E7A;
+}
+
+#total-label{
+	font-size: 1.2vw;
+	bottom: -6vh;
+	width: 8vw;
+}
+#age1-label{
+
+	left: 16.2vw;
+}
+
+#age2-label{
+	left: 21.5vw;
+}
+
+#age3-label{
+	left: 26.8vw;
+}
+
+#race1-label{
+	left: 42vw;
+}
+
+#race2-label{
+	left: 47.3vw;
+}
+
+#child1-label{
+	left: 60.6vw;
+}
+
+#child2-label{
+	left: 65.9vw;
+}
+
+#so1-label{
+	left: 79.2vw;
+
+}
+#so2-label{
+	left: 84.5vw;
+}
+
+#age-label{
+	padding-bottom:0.5vh;
+	color: #607D8B;
+	border-top: 1px solid #CFD8DC;
+	text-align: center;
+	width: 14vw;
+	position: absolute;
+	bottom: -8vh;
+	font-size: 0.9vw;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 0.5vh;
+}
+
+#race-label{
+	padding-bottom:0.5vh;
+	color: #607D8B;
+	border-top: 1px solid #CFD8DC;
+	text-align: center;
+	width: 9.3vw;
+	position: absolute;
+	bottom: -8vh;
+	font-size: 0.9vw;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 0.5vh;
+}
+
+#child-label{
+	padding-bottom:0.5vh;
+	color: #607D8B;
+	border-top: 1px solid #CFD8DC;
+	text-align: center;
+	width: 9.3vw;
+	position: absolute;
+	bottom: -8vh;
+	font-size: 0.9vw;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 0.5vh;
+}
+
+#so-label{
+	padding-bottom:0.5vh;
+	color: #607D8B;
+	border-top: 1px solid #CFD8DC;
+	text-align: center;
+	width: 9.3vw;
+	position: absolute;
+	bottom: -8vh;
+	font-size: 0.9vw;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 0.5vh;
+}
+.bar{
+	background-color: #ECEFF1;
+	width: 4vw;
+	height: 47vh;
+	display: inline-block;
+	margin-right: 1vw;
+	transform: rotate(180deg);
+}
+
+#total-bar{
+	display: inline-block;
+	margin-right: 8vw;
+	width: 8vw;
+}
+
+#age-pane{
+	display: inline-block;
+	margin-right: 10vw;
+	left: 22vw;
+}
+
+#race-pane{
+	display: inline-block;
+	margin-right: 8vw;
+	left: 48vw;
+}
+
+#child-pane{
+	display: inline-block;
+	margin-right: 8vw;
+	left: 68vw;
+}
+
+#so-pane{
+	display: inline-block;
+	left: 88vw;
+}
+
+.sec{
+	height: 0vh;
+	transition: 0.5s ease-out;
+}
+.sec1{
+	background-color: #FF8A65;
+}
+.sec2{
+	background-color: #FFD54F;
+}
+.sec3{
+	background-color: #AED581;
+}
+.sec4{
+	background-color: #4DD0E1;
+}
+.sec5{
+	background-color: #7986CB;
+}
+.sec6{
+	background-color: #F48FB1;
+}
